@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>离线多媒体转换器</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem; background: #f7f7f7; color: #222; }
+    h1 { font-size: 1.3rem; }
+    .card { background: #fff; border-radius: 10px; padding: 1.2rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 1rem; }
+    label { display: block; font-size: .85rem; font-weight: 600; margin: .6rem 0 .2rem; }
+    input, select, button { width: 100%; padding: .55rem .7rem; border: 1px solid #ccc; border-radius: 6px; font-size: .95rem; box-sizing: border-box; }
+    button { background: #2563eb; color: #fff; border: none; font-weight: 600; cursor: pointer; margin-top: .8rem; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    #log { background: #0f172a; color: #cbd5e1; font: 12px/1.5 monospace; padding: .8rem; border-radius: 8px; height: 160px; overflow-y: auto; white-space: pre-wrap; }
+    .row { display: flex; gap: .6rem; }
+    .row > * { flex: 1; }
+    .hint { font-size: .75rem; color: #888; margin-top: .3rem; }
+    progress { width: 100%; height: 8px; margin-top: .8rem; }
+  </style>
+</head>
+<body>
+  <h1>离线多媒体转换器</h1>
+
+  <div class="card">
+    <label>选择文件</label>
+    <input type="file" id="fileInput" accept="image/*,audio/*,video/*">
+    <div class="hint" id="fileInfo"></div>
+
+    <label>输出格式</label>
+    <select id="outputFormat">
+      <!-- 图片 -->
+      <option value="jpg">JPG（图片）</option>
+      <option value="png">PNG（图片）</option>
+      <option value="webp">WebP（图片）</option>
+      <!-- 音频 -->
+      <option value="mp3">MP3（音频）</option>
+      <option value="ogg">OGG（音频）</option>
+      <option value="wav">WAV（音频）</option>
+      <!-- 视频 -->
+      <option value="mp4">MP4（视频）</option>
+      <option value="avi">AVI（视频）</option>
+      <option value="mov">MOV（视频）</option>
+    </select>
+
+    <div id="videoOptions" style="display:none;">
+      <div class="row">
+        <div>
+          <label>分辨率</label>
+          <input type="text" id="scale" placeholder="如 1280x720，留空保持原尺寸">
+        </div>
+        <div>
+          <label>帧率 (fps)</label>
+          <input type="number" id="fps" placeholder="如 30，留空保持原帧率">
+        </div>
+      </div>
+      <label>视频码率</label>
+      <input type="text" id="videoBitrate" placeholder="如 1M（留空则使用 CRF 质量模式）">
+    </div>
+
+    <div id="audioOptions" style="display:none;">
+      <label>音频码率</label>
+      <input type="text" id="audioBitrate" placeholder="如 128k，留空保持原码率">
+    </div>
+
+    <label>音频流处理</label>
+    <select id="audioMode">
+      <option value="keep">保留音频流（默认）</option>
+      <option value="remove">移除音频流（-an）</option>
+      <option value="mute">静音但保留轨道（音量归零）</option>
+    </select>
+
+    <button id="convertBtn" disabled>加载 FFmpeg 中…</button>
+    <progress id="progressBar" value="0" max="100" style="display:none;"></progress>
+  </div>
+
+  <div id="log">等待加载 ffmpeg-core…</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
